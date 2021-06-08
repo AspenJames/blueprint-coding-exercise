@@ -1,0 +1,4 @@
+# Don't include the README or scripts in the build.
+README.md
+scripts/*
+
