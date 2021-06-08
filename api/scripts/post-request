@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Send a POST request to the API endpoint with the example data from the
+# exercise description Readme.
+
+curl -X POST http://localhost:3030/diagnostic-screener \
+-H "Content-type: application/json" \
+-H "Accept: application/json" \
+-d "{ \"answers\": [ { \"value\": 1, \"question_id\": \"question_a\" }, { \"value\": 0, \"question_id\": \"question_b\" }, { \"value\": 2, \"question_id\": \"question_c\" }, { \"value\": 3, \"question_id\": \"question_d\" }, { \"value\": 1, \"question_id\": \"question_e\" }, { \"value\": 0, \"question_id\": \"question_f\" }, { \"value\": 1, \"question_id\": \"question_g\" }, { \"value\": 0, \"question_id\": \"question_h\" } ] }"
