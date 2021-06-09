@@ -29,3 +29,30 @@ I also often write automated tests for my code, and these will be checked in as
 I would normally do. Given more time and especially with collaboration, I would
 set up some sort of a CI/CD pipeline to ensure that these tests are validated
 upon every change in order to prevent regressions.
+
+## Domain mapping
+As stated in the exercise description, the "domain mapping" for the question ids
+should be loaded from a persistent system. I am making an assumption that we
+would not need this mapping to be dynamic or "hot-swappable", and treating the
+mapping as a configuration. For this reason, I updated the format slightly to be
+able to store this data as a `.json` file. I also used the Go standard lib
+`embed` to embed this file into the compiled binary.
+
+The API service will then read this `domainMapping.json` file upon
+initialization and store it into a simple `map[string]string` in the form
+`{question_id: domain}`, which we'll call `domainMap`. This type of structure is
+similar to an Object in JavaScript whose keys represent `question_id`s and whose
+values represent `domain`s.
+
+I could have created a first-class struct type with a `Get` method that accepts
+a `question_id` and returns a matching `domain` or an empty string, but such a
+method would likely require looping over members and doing some sort of string
+comparision on the QuestionID keys. By using a `map[string]string`, we can get
+the same result as the `Get` method described above by simply indexing on the
+desired `question_id`, e.g. `domainMap["question_a"] == "depression"`, and
+`domainMap["unknown"] == ""`. This way, we would only have to loop over the data
+once to populate the `domainMap`, making subsequent queries very cheap.
+
+It would be fairly trivial to re-write `ReadDomainMapping()` to retrieve the
+mapping values from a database or HTTP endpoint in the case that an embedded
+configuration file does not properly meet the business requirements
