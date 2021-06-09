@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/aspenjames/blueprint-coding-exercise/api/static"
 )
 
 func TestPostDiagnosticScreener(t *testing.T) {
@@ -19,7 +21,11 @@ func TestPostDiagnosticScreener(t *testing.T) {
 		{[]byte("{\"answers\":[{\"value\":4,\"question_id\":\"question_a\"},{\"value\":4,\"question_id\":\"question_b\"},{\"value\":4,\"question_id\":\"question_c\"},{\"value\":4,\"question_id\":\"question_d\"},{\"value\":4,\"question_id\":\"question_e\"},{\"value\":4,\"question_id\":\"question_f\"},{\"value\":4,\"question_id\":\"question_g\"},{\"value\":4,\"question_id\":\"question_h\"}]}"),
 			[]byte("{\"results\":[\"ASRM\",\"ASSIST\",\"PHQ-9\"]}")},
 	}
-	api := InitAPIServer()
+	domainMap, err := static.ReadDomainMapping("domainMapping.json")
+	if err != nil {
+		t.Error(err)
+	}
+	api := InitAPIServer(domainMap)
 
 	for _, test := range tests {
 		body := bytes.NewBuffer(test.body)

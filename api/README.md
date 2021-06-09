@@ -56,3 +56,12 @@ once to populate the `domainMap`, making subsequent queries very cheap.
 It would be fairly trivial to re-write `ReadDomainMapping()` to retrieve the
 mapping values from a database or HTTP endpoint in the case that an embedded
 configuration file does not properly meet the business requirements
+
+## Score Analysis
+I placed the logic for the diagnostic screener scoring analysis into its own
+function, `analyzeScores`. The requirements did not state that the score
+threshholds or the domain-assessment mapping needs to be read in from a
+persistent source, so I simply included these as maps within the analyze
+function. I could have placed all of this within the POST request handler
+function, but I felt that separating this logic helped to clarify what the
+request handler does and how.
