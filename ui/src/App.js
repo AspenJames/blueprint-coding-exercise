@@ -8,6 +8,7 @@ function App() {
   const [displayName, setDisplayName] = useState("");
   const [prompt, setPrompt] = useState("");
   const [questions, setQuestions] = useState([]);
+  const [form, update] = useState({});
   // Fetch the screener from the API.
   useEffect(() => {
     (async () => {
@@ -31,6 +32,15 @@ function App() {
         setDisplayName(content.display_name);
         setQuestions(screener.questions);
         setPrompt(screener.title);
+        // Set initial form as a map of `question_id` to `{ title, answer }`.
+        const initalForm = screener.questions.reduce((obj, q) => ({
+          ...obj,
+          [q.question_id]: {
+            title: q.title,
+            answer: undefined
+          }
+        }), {});
+        update(initalForm);
       } catch (err) {
         // Handle error in production application, log here for simplicity.
         console.error(err);
@@ -63,8 +73,10 @@ function App() {
         <DiagnosticScreener
           answers={answers}
           displayName={displayName}
+          form={form}
           prompt={prompt}
           questions={questions}
+          update={update}
         />
       </main>
     </div>
