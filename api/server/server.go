@@ -6,7 +6,10 @@ import (
 
 	"github.com/aspenjames/blueprint-coding-exercise/api/static"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v2/middleware/recover"
+	"github.com/gofiber/fiber/v2/middleware/requestid"
 )
 
 type Server struct {
@@ -69,6 +72,9 @@ func InitAPIServer(domainMap static.DomainMapping) *Server {
 	app := fiber.New()
 
 	// Define middlewares.
+	app.Use(recover.New())
+	app.Use(limiter.New())
+	app.Use(requestid.New())
 	app.Use(logger.New())
 
 	// Define request handlers.
