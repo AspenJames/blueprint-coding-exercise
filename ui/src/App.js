@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
 
-import DiagnosticScreener from './DiagnosticScreener';
 import background from './undraw_Hiking_re_k0bc.svg';
+import DiagnosticScreener from './DiagnosticScreener';
 
 function App() {
   const [answers, setAnswers] = useState([]);
   const [displayName, setDisplayName] = useState("");
   const [prompt, setPrompt] = useState("");
-  const [questions, setQuestions] = useState([]);
   const [form, update] = useState({});
   // Fetch the screener from the API.
   useEffect(() => {
@@ -24,13 +23,12 @@ function App() {
           throw new Error("fetch err");
         }
 
-        const { content } = await resp.json();
+        const { full_name, content } = await resp.json();
         // The JSON returned contains an array of sections, but we assume length
         // 1 for this exercise.
         const screener = content.sections[0];
         setAnswers(screener.answers);
-        setDisplayName(content.display_name);
-        setQuestions(screener.questions);
+        setDisplayName(full_name);
         setPrompt(screener.title);
         // Set initial form as a map of `question_id` to `{ title, answer }`.
         const initalForm = screener.questions.reduce((obj, q) => ({
@@ -54,7 +52,7 @@ function App() {
       style={{ backgroundImage: `url(${background})`, opacity: '75%' }}
     >
       <header
-        className="mx-auto p-4 sm:p-6 bg-gradient-to-b from-indigo-800 to-indigo-400 flex justify-between"
+        className="mx-auto p-4 sm:p-6 bg-gradient-to-b from-indigo-800 to-indigo-600 flex justify-between"
       >
         <a
           className="text-white text-xl sm:text-2xl" href="https://github.com/aspenjames/blueprint-coding-exercise"
@@ -68,14 +66,13 @@ function App() {
         </a>
       </header>
       <main
-        className="pt-2 container md:conatiner-md mx-auto"
+        className="py-8 px-4 container mx-auto"
       >
         <DiagnosticScreener
           answers={answers}
           displayName={displayName}
           form={form}
           prompt={prompt}
-          questions={questions}
           update={update}
         />
       </main>
