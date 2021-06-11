@@ -12,7 +12,7 @@ Since this API is constrained to a single endpoint with single task, my aim is
 to develop and deploy this as if it were a microservice -- lighweight, built &
 deployed in a container. I've been learning Golang recently, and it is a perfect
 fit for a small API like this problem space; I'll be using Go along with
-[gofiber/fiber](https://gofiber.io/). Fiber is a web framework for Go inspired
+[gofiber/fiber](https://gofiber.io). Fiber is a web framework for Go inspired
 by Express-style routing, so there's also a nice crossover with the Blueprint
 stack using Express itself.
 
@@ -68,8 +68,30 @@ request handler does and how.
 
 # Part II addition
 
-The data for the Blueprint diagnostic screener for [part 2](../ui/README.md) is
-added as another embedded static file. In order to simulate retrieving the
-screener by its ID, I stored the JSON data with the screener ID as the
-filename. I created a GET handler that accepts a screener ID as a path
+The [data](../Readme.md#the-exercise-1) for the Blueprint diagnostic screener
+for part 2 is added as another embedded static file. In order to simulate
+retrieving the screener by its ID, I stored the JSON data with the screener ID
+as the filename. I created a GET handler that accepts a screener ID as a path
 parameter, reads the file, and returns the data as JSON.
+
+## Deployment
+This API is deployed alongside the frontend [app](../ui/README.md#Deployment),
+and may be run locally using `docker compose up --build` from the main exercise
+root.
+
+## Considerations
+In a production application, I would include more robust error handling. Handers
+simply return their errors to the caller, and ideally we'd want more descriptive
+and useful errors. I would also collect logs and traces into a system like
+[Elastic](https://elastic.co) that includes alerting, so bugs and issues could be responded
+to and debugged more easily. This would also give insight into the usage and
+load, which would be useful for indicating when services would need to scale.
+Depending on the nature of the metrics data, we could scale the number of
+instances or underlying resources, and/or deploy to multiple availability zones.
+
+This application also does not use a database, but would likely need to in
+production to be useful. The `domainMapping` could then be stored in this
+database and updated without redeploying the services, and the user's answers &
+results could be stored. The screener data, `abcd-1234.json`, likely could
+continue to live in this format unless we would want an option to change/add
+screeners without redeploying the services.
