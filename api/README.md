@@ -65,3 +65,11 @@ persistent source, so I simply included these as maps within the analyze
 function. I could have placed all of this within the POST request handler
 function, but I felt that separating this logic helped to clarify what the
 request handler does and how.
+
+# Part II addition
+
+The data for the Blueprint diagnostic screener for [part 2](../ui/README.md) is
+added as another embedded static file. In order to simulate retrieving the
+screener by its ID, I stored the JSON data with the screener ID as the
+filename. I created a GET handler that accepts a screener ID as a path
+parameter, reads the file, and returns the data as JSON.

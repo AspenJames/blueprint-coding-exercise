@@ -6,6 +6,7 @@ import (
 
 	"github.com/aspenjames/blueprint-coding-exercise/api/static"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 )
 
 type Server struct {
@@ -64,9 +65,22 @@ func analyzeScores(scores map[string]int) []string {
 }
 
 func InitAPIServer(domainMap static.DomainMapping) *Server {
+	// Init application.
 	app := fiber.New()
 
-	// Define POST handler.
+	// Define middlewares.
+	app.Use(logger.New())
+
+	// Define request handlers.
+	app.Get("diagnostic-screener/:screenerID", func(c *fiber.Ctx) error {
+		screenerID := c.Params("screenerID")
+		screenerData, err := static.ReadDiagnosticScreener(screenerID)
+		if err != nil {
+			return err
+		}
+		return c.JSON(screenerData)
+	})
+
 	app.Post("diagnostic-screener", func(c *fiber.Ctx) error {
 		// Initialize a requestBody and response structs.
 		body := new(requestBody)

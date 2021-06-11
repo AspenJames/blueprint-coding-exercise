@@ -11,6 +11,20 @@ var assets embed.FS
 
 type DomainMapping map[string]string
 
+func ReadDiagnosticScreener(screenerID string) (map[string]interface{}, error) {
+	screenerJSON := map[string]interface{}{}
+	filename := screenerID + ".json"
+	bytes, err := assets.ReadFile(filename)
+	if err != nil {
+		return screenerJSON, err
+	}
+	err = json.Unmarshal(bytes, &screenerJSON)
+	if err != nil {
+		return screenerJSON, err
+	}
+	return screenerJSON, nil
+}
+
 // Read the configuration file defined at `dmFilename`, populating the given
 // domain mapping. Returns a nil error in the case that parsing the file and
 // populating the map was successful.
