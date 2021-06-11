@@ -11,6 +11,7 @@ import Prompt from './Prompt';
  */
 const DiagnosticScreener = ({ answers, displayName, prompt, questions, form, update }) => {
   const [currentStep, setStep] = useState(0);
+  const [assessments, setAsmts] = useState();
   // STEPS is an array of the questionIDs.
   const STEPS = Object.keys(form);
   const LAST = STEPS.length - 1;
@@ -34,9 +35,9 @@ const DiagnosticScreener = ({ answers, displayName, prompt, questions, form, upd
           value: form[id].answer
         })),
       };
-      const resp = postData(data)
+      const resp = await postData(data);
       const body = await resp.json();
-      console.log({ response: body });
+      setAsmts(body.results);
     };
   };
 
@@ -51,13 +52,40 @@ const DiagnosticScreener = ({ answers, displayName, prompt, questions, form, upd
     };
   };
 
+  const stepper = (step) => STEPS.map((_, idx) => {
+    let circle = 'flex-auto mx-2 border-2 border-transparent rounded-full text-center';
+    if (idx < step) {
+      circle += ' bg-green-300';
+    } else if (idx === step) {
+      circle += ' border-green-300';
+    }
+    return <span
+      key={idx}
+      className={circle}
+    >{idx + 1}</span>
+  });
+
   return (
-    <>
-      <h1>{displayName}</h1>
-      <h2>{prompt}</h2>
+    <div className="p-5 max-w-md mx-auto rounded overflow-hidden shadow-lg bg-white bg-opacity-80">
+      <h1 className="text-xl font-semibold">{displayName}</h1>
       <br />
-      {buildPrompt(currentStep)}
-    </>
+
+      {assessments
+        ? <>
+          <h2>Recommended assessments:</h2>
+          <p>{assessments.join(' ')}</p>
+        </>
+        : <>
+          <h2 className="text-base">{prompt}</h2>
+          <br />
+          {buildPrompt(currentStep)}
+          <div className='flex pt-12'>
+            {stepper(currentStep)}
+          </div>
+        </>
+      }
+
+    </div>
   );
 }
 
