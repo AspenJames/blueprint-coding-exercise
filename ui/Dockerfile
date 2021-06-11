@@ -18,3 +18,5 @@ RUN yarn build
 FROM nginx:1.21-alpine as final
 
 COPY --from=build --chown=nginx:nginx /app/build /usr/share/nginx/html
+
+COPY --chown=nginx:nginx nginx/ui.conf /etc/nginx/conf.d/default.conf
